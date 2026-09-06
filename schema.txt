@@ -1,0 +1,57 @@
+DROP TABLE IF EXISTS DiaryEntry;
+DROP TABLE IF EXISTS MealComponent;
+DROP TABLE IF EXISTS Meal;
+DROP TABLE IF EXISTS WeightLog;
+DROP TABLE IF EXISTS FoodItem;
+DROP TABLE IF EXISTS User;
+
+CREATE TABLE User (
+  UserNumber    INT PRIMARY KEY,
+  Age           INT NOT NULL,
+  Gender        VARCHAR(10) NOT NULL,
+  HeightCm      INT NOT NULL,
+  ActivityLevel INT NOT NULL,
+  DesiredWeight DECIMAL(5,2)
+);
+
+CREATE TABLE WeightLog (
+  UserNumber INT NOT NULL,
+  MeasuredOn DATE NOT NULL,
+  WeightKg   DECIMAL(5,2) NOT NULL,
+  PRIMARY KEY (UserNumber, MeasuredOn),
+  FOREIGN KEY (UserNumber) REFERENCES User(UserNumber)
+);
+
+CREATE TABLE FoodItem (
+  FoodNumber           INT PRIMARY KEY,
+  FoodName             VARCHAR(50) NOT NULL,
+  CaloriesPer100g      DECIMAL(6,2) NOT NULL,
+  ProteinPer100g       DECIMAL(6,2) NOT NULL,
+  CarbohydratesPer100g DECIMAL(6,2) NOT NULL,
+  FatPer100g           DECIMAL(6,2) NOT NULL,
+  FibrePer100g         DECIMAL(6,2) NOT NULL,
+  PricePer100g         DECIMAL(8,2) NOT NULL
+);
+
+CREATE TABLE Meal (
+  MealNumber INT PRIMARY KEY,
+  MealName   VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE MealComponent (
+  MealNumber INT NOT NULL,
+  FoodNumber INT NOT NULL,
+  Grams      DECIMAL(7,2) NOT NULL,
+  PRIMARY KEY (MealNumber, FoodNumber),
+  FOREIGN KEY (MealNumber) REFERENCES Meal(MealNumber),
+  FOREIGN KEY (FoodNumber) REFERENCES FoodItem(FoodNumber)
+);
+
+CREATE TABLE DiaryEntry (
+  DiaryEntryNumber INT PRIMARY KEY,
+  UserNumber       INT NOT NULL,
+  MealNumber       INT NOT NULL,
+  EatenOn          DATE NOT NULL,
+  FOREIGN KEY (UserNumber) REFERENCES User(UserNumber),
+  FOREIGN KEY (MealNumber) REFERENCES Meal(MealNumber)
+);
